@@ -1,5 +1,5 @@
 'use strict';
-/* 10min*/ 
+/* 8min/10min*/ 
 function getItemList(selectedItems){
   var list = {}; 
   selectedItems.forEach(selectedItem =>{
@@ -8,33 +8,33 @@ function getItemList(selectedItems){
   })    
   return list; 
 }
-/* 20min*/ 
-function getBill(ItemList,allItems){
+/* 15min/20min*/ 
+function getBill(itemList,allItems){
   var expected = `============= 订餐明细 =============\n`;
   var total = 0;
   var selectedItemInfo = [];
-  for(let key in ItemList){
+  for(let key in itemList){
     allItems.forEach(i => {
       if(key == i.id){
-        total += i.price * ItemList[key]
+        total += i.price * itemList[key]
         selectedItemInfo.push({id:i.id,name:i.name,price:i.price})
-        expected = expected.concat(`${i.name} x ${ItemList[key]} = ${i.price * ItemList[key]}元\n`)
+        expected = expected.concat(`${i.name} x ${itemList[key]} = ${i.price * itemList[key]}元\n`)
       }
     })
   }
   expected = expected.concat(`-----------------------------------\n`)
-  expected = checkPromotions(total,ItemList,selectedItemInfo,expected)
+  expected = checkPromotions(total,itemList,selectedItemInfo,expected)
   return expected;
 }
-/* 25min*/ 
-function checkPromotions(total,ItemList,selectedItemInfo,expected){
+/* 18min/25min*/ 
+function checkPromotions(total,itemList,selectedItemInfo,expected){
   let allPromotions = loadPromotions();
   let firstDiscount = 0;
   let secondDiscount = {sum:0,name:[]}; 
   if(total >= 30){
     firstDiscount = 6;
   }
-  secondDiscount= getSecondDiscount(ItemList,selectedItemInfo,allPromotions)
+  secondDiscount= getSecondDiscount(itemList,selectedItemInfo,allPromotions)
   if(secondDiscount.sum > firstDiscount){
     let type = allPromotions[1].type
     expected = expected.concat(`使用优惠:\n指定菜品半价(${secondDiscount.name.join("，")})，省${secondDiscount.sum}元\n-----------------------------------\n总计：${total - secondDiscount.sum}元\n===================================`)
@@ -50,10 +50,11 @@ function checkPromotions(total,ItemList,selectedItemInfo,expected){
   }
   return expected;
 }
-/* 10min*/ 
-function getSecondDiscount(ItemList,selectedItemInfo,allPromotions){
+/* 8min/10min*/ 
+function getSecondDiscount(itemList,selectedItemInfo,allPromotions){
   var Discont = {sum:0,name:[]};
-  for(let key in ItemList){
+  var itemListKeys = itemList.getKeys;
+  for(let key in itemList){
    if(allPromotions[1].items.includes(key)){
     selectedItemInfo.forEach(i => {
       if(i.id == key){
@@ -65,10 +66,10 @@ function getSecondDiscount(ItemList,selectedItemInfo,allPromotions){
   }
   return Discont;
 }
-/* 3min*/ 
+/* 1min/3min*/ 
 function bestCharge(selectedItems) {
   let allItems = loadAllItems();
-  let ItemList = getItemList(selectedItems);
-  let expected = getBill(ItemList,allItems);
+  let itemList = getItemList(selectedItems);
+  let expected = getBill(itemList,allItems);
   return expected;
 }
