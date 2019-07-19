@@ -13,15 +13,22 @@ function getBill(itemList,allItems){
   var expected = `============= 订餐明细 =============\n`;
   var total = 0;
   var selectedItemInfo = [];
-  for(let key in itemList){
-    allItems.forEach(i => {
-      if(key == i.id){
-        total += i.price * itemList[key]
-        selectedItemInfo.push({id:i.id,name:i.name,price:i.price})
-        expected = expected.concat(`${i.name} x ${itemList[key]} = ${i.price * itemList[key]}元\n`)
-      }
-    })
-  }
+  var keys = Object.keys(itemList)
+  keys.forEach(id => {
+    const item = allItems.filter(item => item.id == id)[0]
+    total += item.price * itemList[id]
+        selectedItemInfo.push({id:item.id,name:item.name,price:item.price})
+        expected = expected.concat(`${item.name} x ${itemList[id]} = ${item.price * itemList[id]}元\n`)
+  })
+  // for(let key in itemList){
+  //   allItems.forEach(i => {
+  //     if(key == i.id){
+  //       total += i.price * itemList[key]
+  //       selectedItemInfo.push({id:i.id,name:i.name,price:i.price})
+  //       expected = expected.concat(`${i.name} x ${itemList[key]} = ${i.price * itemList[key]}元\n`)
+  //     }
+  //   })
+  // }
   expected = expected.concat(`-----------------------------------\n`)
   expected = checkPromotions(total,itemList,selectedItemInfo,expected)
   return expected;
@@ -53,17 +60,13 @@ function checkPromotions(total,itemList,selectedItemInfo,expected){
 /* 8min/10min*/ 
 function getSecondDiscount(itemList,selectedItemInfo,allPromotions){
   var Discont = {sum:0,name:[]};
-  var itemListKeys = itemList.getKeys;
-  for(let key in itemList){
-   if(allPromotions[1].items.includes(key)){
-    selectedItemInfo.forEach(i => {
-      if(i.id == key){
-        Discont.sum += i.price / 2;
-        Discont.name.push(i.name);
-      }
-    })
-   }
-  }
+  var keys = Object.keys(itemList).filter(key =>(allPromotions[1].items.includes(key)) )
+  selectedItemInfo.forEach(i => {
+    if(keys.includes(i.id)){
+      Discont.sum += i.price / 2;
+      Discont.name.push(i.name);
+    }
+  })
   return Discont;
 }
 /* 1min/3min*/ 
