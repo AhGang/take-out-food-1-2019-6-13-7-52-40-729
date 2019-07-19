@@ -20,15 +20,6 @@ function getBill(itemList,allItems){
         selectedItemInfo.push({id:item.id,name:item.name,price:item.price})
         expected = expected.concat(`${item.name} x ${itemList[id]} = ${item.price * itemList[id]}元\n`)
   })
-  // for(let key in itemList){
-  //   allItems.forEach(i => {
-  //     if(key == i.id){
-  //       total += i.price * itemList[key]
-  //       selectedItemInfo.push({id:i.id,name:i.name,price:i.price})
-  //       expected = expected.concat(`${i.name} x ${itemList[key]} = ${i.price * itemList[key]}元\n`)
-  //     }
-  //   })
-  // }
   expected = expected.concat(`-----------------------------------\n`)
   expected = checkPromotions(total,itemList,selectedItemInfo,expected)
   return expected;
